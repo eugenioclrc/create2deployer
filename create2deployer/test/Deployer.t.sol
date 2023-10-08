@@ -22,16 +22,16 @@ contract DeployerTest is Test {
         HUFFCREATE2DEPLOYER = deployed;
     }
 
-    /*
+
     function test_deployOptimized() public {
         bytes memory bytecode = vm.compile("src/CREATE2DEPLOYER.huff");
 
-        bytes32 salt = 0x91549767cf93cc04cc66029eba132b2402ea0b5fc395403265eb7f7801ee27bc;
+        bytes32 salt = 0x4d418b3f1071126a820fe2e65867e66c6b783cbd201cde25e0e457a9ff92c431;
 
         vm.etch(0x4eEC6b914EeCCF25005b7985D29c42350B6Cbd23, HUFFCREATE2DEPLOYER.code);
         address CREATE2HUFF = 0x4eEC6b914EeCCF25005b7985D29c42350B6Cbd23;
 
-        address expected = 0x000000db2d6E25fD5236241BbaD336d74B5cE99a;
+        address expected = 0x00000080160025B053CfC088C5Fa82671d7d52F7;
         address preComputedAddress = computeCreate2Address(salt, keccak256(abi.encodePacked(bytecode)), CREATE2HUFF);
 
         assertEq(preComputedAddress, expected, "should be the same address");
@@ -52,12 +52,8 @@ contract DeployerTest is Test {
         create2Counter.increment();
         assertEq(create2Counter.number(), 1);
 
-        // should rever if deployed the same sender, with the same salt
-        //(success, response) = expected.call(abi.encodePacked(salt, type(Counter).creationCode));
-        //require(success, "should be successful");
-
     }
-    */
+
 
     function test_huffcreate2factory() public {
         /// @notice deploy the bytecode with the create instruction
