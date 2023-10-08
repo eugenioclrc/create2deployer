@@ -12,3 +12,11 @@ contract Counter {
         number++;
     }
 }
+
+contract CounterWithCondition {
+    uint256 public number;
+    constructor(uint256 _number) {
+        require(_number > 0, "not greater than 0");
+        number = _number;
+    }
+}

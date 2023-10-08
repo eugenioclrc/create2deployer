@@ -22,7 +22,7 @@ contract CounterTest is Test {
         return child;
     }
 
-    function test_codesize() public {
+    function test_gas_codesize() public {
         bytes memory newCreate2Bytecode = vm.compile("src/CREATE2DEPLOYER.huff");
         /// @notice deploy the bytecode with the create instruction
         address CREATE2HUFF = deployFromBytecode(newCreate2Bytecode);
@@ -31,7 +31,7 @@ contract CounterTest is Test {
         console2.log("Create2 HUFF bytecode size", CREATE2HUFF.code.length);
     }
 
-    function test_huffcreate2factory() public {
+    function test_gas_huffcreate2factory() public {
         bytes memory newCreate2Bytecode = vm.compile("src/CREATE2DEPLOYER.huff");
         /// @notice deploy the bytecode with the create instruction
         address CREATE2HUFF = deployFromBytecode(newCreate2Bytecode);
@@ -47,7 +47,7 @@ contract CounterTest is Test {
     }
 
     // This is the current behaviour of CREATE2_FACTORY
-    function test_create2factory() public {
+    function test_gas_create2factory() public {
         bytes32 salt = keccak256("salt");
         // this will use CREATE2_FACTORY
 

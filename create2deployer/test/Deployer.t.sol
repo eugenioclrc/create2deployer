@@ -22,6 +22,7 @@ contract DeployerTest is Test {
         HUFFCREATE2DEPLOYER = deployed;
     }
 
+    /*
     function test_deployOptimized() public {
         bytes memory bytecode = vm.compile("src/CREATE2DEPLOYER.huff");
 
@@ -50,7 +51,13 @@ contract DeployerTest is Test {
 
         create2Counter.increment();
         assertEq(create2Counter.number(), 1);
+
+        // should rever if deployed the same sender, with the same salt
+        //(success, response) = expected.call(abi.encodePacked(salt, type(Counter).creationCode));
+        //require(success, "should be successful");
+
     }
+    */
 
     function test_huffcreate2factory() public {
         /// @notice deploy the bytecode with the create instruction
@@ -59,7 +66,7 @@ contract DeployerTest is Test {
         address preComputedAddress =
             computeCreate2Address(salt, keccak256(abi.encodePacked(type(Counter).creationCode)), HUFFCREATE2DEPLOYER);
         (bool success, bytes memory response) =
-            HUFFCREATE2DEPLOYER.call(abi.encodePacked(salt, type(Counter).creationCode));
+            HUFFCREATE2DEPLOYER.call{gas: 100000}(abi.encodePacked(salt, type(Counter).creationCode));
         require(success, "should be successful");
         // a bit messy but works
         (,, uint256 _counter) = abi.decode(abi.encode(response), (bytes32, uint256, uint256));
@@ -69,6 +76,12 @@ contract DeployerTest is Test {
 
         create2Counter.increment();
         assertEq(create2Counter.number(), 1);
+
+        // this will revert and consume a lot of gas beacause of the .call, so we use a gasLimit
+        ( success,) =
+            HUFFCREATE2DEPLOYER.call{gas: 100000}(abi.encodePacked(salt, type(Counter).creationCode));
+        assertFalse(success, "should revert, redeploy with same salt");
+       
     }
 
     // This is the current behaviour of CREATE2_FACTORY
