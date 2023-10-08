@@ -8,6 +8,10 @@ Bienvenido al repositorio principal de nuestra solución, un rollup usando optim
 
 - **Carpeta [`/create2deployer`](./create2deployer/):** Aquí encontrarás el código y los tests de la nueva implementación del contrato Create2Deployer. Esta implementación ha sido realizada utilizando el framework Foundry. Para más detalles, dirígete a la carpeta y consulta el `README` específico de esa sección.
 
+![Create2deployer code](./code.png "Create2deployer code")
+
+
+
 ## Configuración de OpStack (Optimism Stack)
 
 Para configurar OpStack y trabajar con nuestra solución, sigue los siguientes pasos:
