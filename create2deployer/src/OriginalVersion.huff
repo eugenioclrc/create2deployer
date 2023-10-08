@@ -1,0 +1,19 @@
+// this is a 1 on 1 bytecode with the create2deployer bytecode 0x4e59b44847b379578588920ca78fbf26c0b4956c
+
+#define macro MAIN() = takes(0) returns(0) {
+  0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0
+  calldatasize
+  add
+  0x00
+  dup2 0x20 dup3 calldatacopy
+  dup1 calldataload
+  dup3 dup3 callvalue create2
+
+  dup1 iszero iszero createOkJump jumpi
+  dup2 dup3 revert
+  
+  createOkJump:
+  dup1 dup3 mstore
+  pop pop pop
+  0x14 0x0c return
+}
