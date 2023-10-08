@@ -1,0 +1,6 @@
+Huff-Console/=lib/Huff-Console/
+ds-test/=lib/forge-std/lib/ds-test/src/
+forge-std/=lib/forge-std/src/
+foundry-huff/=lib/Huff-Console/lib/foundry-huff/src/
+solidity-stringutils/=lib/Huff-Console/lib/foundry-huff/lib/solidity-stringutils/
+stringutils/=lib/Huff-Console/lib/foundry-huff/lib/solidity-stringutils/

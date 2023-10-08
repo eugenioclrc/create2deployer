@@ -1,0 +1,22 @@
+// Optimized Create2Deployer Contract in Huff
+// This implementation allows for efficient contract deployment using the CREATE2 opcode.
+// The main advantage of this Huff version is the significant reduction in bytecode size and gas consumption.
+// Developed during the hackathon KOD.
+
+#define macro MAIN() = takes(0) returns(0) {
+  0x1f not calldatasize add       // 0xff...e0 + calldatasize 
+  0x00                            // 0xff...e0 + calldatasize, 0x00
+  dup2 0x20 dup3 calldatacopy     // 0xff...e0 + calldatasize, 0x00        MEMORY: calldatacopy
+  dup1 calldataload               // 0xff...e0 + calldatasize, 0x00, hash
+  dup3 dup3 callvalue create2     // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
+  
+  // if deployedAddress != 0x00: goto creationOkJump
+  dup1 creationOkJump jumpi      // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
+  
+  // 0x00 0x00 revert (if deployedAddress == 0x00 revert)
+  dup1 dup1 revert
+  
+  creationOkJump:
+    dup2 mstore
+    0x14 0x0c return
+}

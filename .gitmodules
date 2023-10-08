@@ -1,6 +1,6 @@
 [submodule "create2deployer/lib/forge-std"]
 	path = create2deployer/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-[submodule "create2deployer/lib/foundry-huff"]
-	path = create2deployer/lib/foundry-huff
-	url = https://github.com/huff-language/foundry-huff
+[submodule "create2deployer/lib/Huff-Console"]
+	path = create2deployer/lib/Huff-Console
+	url = https://github.com/AmadiMichael/Huff-Console
