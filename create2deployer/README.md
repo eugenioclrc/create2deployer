@@ -23,21 +23,34 @@ Durante este hackaton, hemos reescrito el contrato `Create2Deployer` en el lengu
 El código final en Huff es el siguiente:
 
 ```huff
+// Optimized Create2Deployer Contract in Huff
+// This implementation allows for efficient contract deployment using the CREATE2 opcode.
+// The main advantage of this Huff version is the significant reduction in bytecode size and gas consumption.
+// Developed during the hackathon KOD.
+
 #define macro MAIN() = takes(0) returns(0) {
-  0x1f not calldatasize add       // 0xff...e0 + calldatasize 
-  0x00                            // 0xff...e0 + calldatasize, 0x00
-  dup2 0x20 dup3 calldatacopy     // 0xff...e0 + calldatasize, 0x00        MEMORY: calldatacopy
-  dup1 calldataload               // 0xff...e0 + calldatasize, 0x00, hash
-  dup3 dup3 callvalue create2     // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
+  pc                              // 0x00 no PUSH0? no problem!
+  0x20                            // 0x00, 0x20
+  dup1 calldatasize sub           // 0x00, 0x20, (bytecode size = calldatasize - 0x20)
+  dup3                            // 0x00, 0x20, bytecode_size, 0x00
+  dup2                            // 0x00, 0x20, bytecode_size, 0x00, bytecode_size
+  dup4                            // 0x00, 0x20, bytecode_size, 0x00, bytecode_size, 0x20
+  dup6                            // 0x00, 0x20, bytecode_size, 0x00, bytecode_size, 0x20, 0x00
+  calldatacopy                    // 0x00, 0x20, bytecode_size, 0x00
+  dup1 calldataload               // 0x00, 0x20, bytecode_size, 0x00, bytes32
+  dup3                            // 0x00, 0x20, bytecode_size, 0x00, bytes32, bytecode_size
+  dup6                            // 0x00, 0x20, bytecode_size, 0x00, bytes32, bytecode_size, 0x00
+  callvalue                       // 0x00, 0x20, bytecode_size, 0x00, bytes32, bytecode_size, 0x00, callvalue
+  create2                         // 0x00, 0x20, bytecode_size, 0x00, deployed address
   
   // if deployedAddress != 0x00: goto creationOkJump
   dup1 creationOkJump jumpi      // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
   
   // 0x00 0x00 revert (if deployedAddress == 0x00 revert)
-  dup1 dup1 revert
+  dup1 revert
   
   creationOkJump:
-    dup2 mstore
+    dup5 mstore
     0x14 0x0c return
 }
 ```
