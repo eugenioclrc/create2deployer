@@ -1,5 +1,9 @@
 # KOD Optimización del Create2Deployer, CREATE2DEPLOYER Huff rewrite
 
+## REQUIREMENTS
+Antes de testear por favor recordar instalar el compilador de huff:
+https://docs.huff.sh/get-started/installing/
+
 ## Introducción
 
 El contrato `Create2Deployer` es una implementación que permite a los desarrolladores desplegar contratos en multiples chains EVM compatibles utilizando el opcode `CREATE2`. Esto es especialmente útil para desplegar contratos en direcciones específicas de antemano, lo que puede tener ventajas en términos de interoperabilidad y diseño de sistemas.

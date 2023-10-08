@@ -1,5 +1,5 @@
 
-# ElRollup de LaChain y un nuevo `Create2Deployer``
+# ElRollup de LaChain y un nuevo `Create2Deployer`
 
 Bienvenido al repositorio principal de nuestra solución, un rollup usando optimism y un contrato Create2Deployer para mejorar LaChain.
 
