@@ -22,16 +22,15 @@ contract DeployerTest is Test {
         HUFFCREATE2DEPLOYER = deployed;
     }
 
-
     function test_deployOptimized() public {
         bytes memory bytecode = vm.compile("src/CREATE2DEPLOYER.huff");
 
-        bytes32 salt = 0x4d418b3f1071126a820fe2e65867e66c6b783cbd201cde25e0e457a9ff92c431;
+        bytes32 salt = 0xf09be82ef1e4f3327289ae92ed07f1f546ba47b1c8550a3d05833dcc2d980b1b;
 
         vm.etch(0x4eEC6b914EeCCF25005b7985D29c42350B6Cbd23, HUFFCREATE2DEPLOYER.code);
         address CREATE2HUFF = 0x4eEC6b914EeCCF25005b7985D29c42350B6Cbd23;
 
-        address expected = 0x00000080160025B053CfC088C5Fa82671d7d52F7;
+        address expected = 0x0000000d7D0af2f330D3295B047c1c449D1BE51e;
         address preComputedAddress = computeCreate2Address(salt, keccak256(abi.encodePacked(bytecode)), CREATE2HUFF);
 
         assertEq(preComputedAddress, expected, "should be the same address");

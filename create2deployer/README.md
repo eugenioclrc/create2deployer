@@ -24,20 +24,28 @@ El código final en Huff es el siguiente:
 
 ```huff
 #define macro MAIN() = takes(0) returns(0) {
-  0x1f not calldatasize add       // 0xff...e0 + calldatasize 
-  0x00                            // 0xff...e0 + calldatasize, 0x00
-  dup2 0x20 dup3 calldatacopy     // 0xff...e0 + calldatasize, 0x00        MEMORY: calldatacopy
-  dup1 calldataload               // 0xff...e0 + calldatasize, 0x00, hash
-  dup3 dup3 callvalue create2     // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
+  pc                              // 0x00 no PUSH0? no problem!
+  0x20                            // 0x00, 0x20
+  dup1 calldatasize sub           // 0x00, 0x20, (bytecode size = calldatasize - 0x20)
+  dup1                            // 0x00, 0x20, bytecode_size, bytecode_size
+  dup3                            // 0x00, 0x20, bytecode_size, bytecode_size, 0x20
+
+  dup5                            // 0x00, 0x20, bytecode_size,  bytecode_size, 0x20, 0x00
+  calldatacopy                    // 0x00, 0x20, bytecode_size,
+  dup3 calldataload               // 0x00, 0x20, bytecode_size, bytes32
+  dup2                            // 0x00, 0x20, bytecode_size, bytes32, bytecode_size
+  dup5                            // 0x00, 0x20, bytecode_size, bytes32, bytecode_size, 0x00
+  callvalue                       // 0x00, 0x20, bytecode_size, bytes32, bytecode_size, 0x00, callvalue
+  create2                         // 0x00, 0x20, bytecode_size, deployed address
   
   // if deployedAddress != 0x00: goto creationOkJump
-  dup1 creationOkJump jumpi      // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
+  dup1 creationOkJump jumpi       // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
   
   // 0x00 0x00 revert (if deployedAddress == 0x00 revert)
-  dup1 dup1 revert
+  dup1 revert
   
   creationOkJump:
-    dup2 mstore
+    dup4 mstore
     0x14 0x0c return
 }
 ```
