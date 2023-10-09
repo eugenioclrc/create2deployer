@@ -23,20 +23,19 @@ Durante este hackaton, hemos reescrito el contrato `Create2Deployer` en el lengu
 El código final en Huff es el siguiente:
 
 ```huff
-#define macro MAIN() = takes(0) returns(0) {
-  pc                              // 0x00 no PUSH0? no problem!
-  0x20                            // 0x00, 0x20
-  dup1 calldatasize sub           // 0x00, 0x20, (bytecode size = calldatasize - 0x20)
-  dup1                            // 0x00, 0x20, bytecode_size, bytecode_size
-  dup3                            // 0x00, 0x20, bytecode_size, bytecode_size, 0x20
+#define macro __DISPATCHER(z0) = takes(0) returns(0) {
+  <z0> calldataload               // bytes32
+  0x20                            // bytes32, 0x20
+  dup1 calldatasize sub           // bytes32, 0x20, (bytecode size = calldatasize - 0x20)
+  
+  dup1                            // bytes32, 0x20, bytecode_size, bytecode_size
+  swap2                           // bytes32, bytecode_size, bytecode_size, 0x20
+  <z0>                            // bytes32, bytecode_size, bytecode_size, 0x20, 0x00
+  calldatacopy                    // bytes32, bytecode_size,
 
-  dup5                            // 0x00, 0x20, bytecode_size,  bytecode_size, 0x20, 0x00
-  calldatacopy                    // 0x00, 0x20, bytecode_size,
-  dup3 calldataload               // 0x00, 0x20, bytecode_size, bytes32
-  dup2                            // 0x00, 0x20, bytecode_size, bytes32, bytecode_size
-  dup5                            // 0x00, 0x20, bytecode_size, bytes32, bytecode_size, 0x00
-  callvalue                       // 0x00, 0x20, bytecode_size, bytes32, bytecode_size, 0x00, callvalue
-  create2                         // 0x00, 0x20, bytecode_size, deployed address
+  <z0>                            // bytes32, bytecode_size, 0x00
+  callvalue                       // bytes32, bytecode_size, 0x00, callvalue
+  create2                         // deployed address
   
   // if deployedAddress != 0x00: goto creationOkJump
   dup1 creationOkJump jumpi       // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
@@ -45,8 +44,12 @@ El código final en Huff es el siguiente:
   dup1 revert
   
   creationOkJump:
-    dup4 mstore
+    <z0> mstore
     0x14 0x0c return
+}
+
+#define macro MAIN() = takes(0) returns(0) {
+  __DISPATCHER(returndatasize)
 }
 ```
 

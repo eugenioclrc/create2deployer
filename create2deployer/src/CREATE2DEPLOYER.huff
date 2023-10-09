@@ -3,7 +3,7 @@
 // The main advantage of this Huff version is the significant reduction in bytecode size and gas consumption.
 // Developed during the hackathon KOD.
 
-#define macro __DISPATCHER(z0, salt) = takes(0) returns(0) {
+#define macro __DISPATCHER(z0) = takes(0) returns(0) {
   <z0> calldataload               // bytes32
   0x20                            // bytes32, 0x20
   dup1 calldatasize sub           // bytes32, 0x20, (bytecode size = calldatasize - 0x20)
