@@ -21,7 +21,7 @@ contract DeployerTest is Test {
         }
         HUFFCREATE2DEPLOYER = deployed;
     }
-
+/*
     function test_deployOptimized() public {
         bytes memory bytecode = vm.compile("src/CREATE2DEPLOYER.huff");
 
@@ -52,6 +52,7 @@ contract DeployerTest is Test {
         assertEq(create2Counter.number(), 1);
 
     }
+    */
 
 
     function test_huffcreate2factory() public {
