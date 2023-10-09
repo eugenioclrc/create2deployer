@@ -3,20 +3,19 @@
 // The main advantage of this Huff version is the significant reduction in bytecode size and gas consumption.
 // Developed during the hackathon KOD.
 
-#define macro __DISPATCHER(z0) = takes(0) returns(0) {
-  0x20                            // 0x20
-  dup1 calldatasize sub           // 0x20, (bytecode size = calldatasize - 0x20)
+#define macro __DISPATCHER(z0, salt) = takes(0) returns(0) {
+  <z0> calldataload               // bytes32
+  0x20                            // bytes32, 0x20
+  dup1 calldatasize sub           // bytes32, 0x20, (bytecode size = calldatasize - 0x20)
   
-  dup1                            // 0x20, bytecode_size, bytecode_size
-  dup3                            // 0x20, bytecode_size, bytecode_size, 0x20
-  <z0>                            // 0x20, bytecode_size, bytecode_size, 0x20, 0x00
-  calldatacopy                    // 0x20, bytecode_size,
+  dup1                            // bytes32, 0x20, bytecode_size, bytecode_size
+  swap2                           // bytes32, bytecode_size, bytecode_size, 0x20
+  <z0>                            // bytes32, bytecode_size, bytecode_size, 0x20, 0x00
+  calldatacopy                    // bytes32, bytecode_size,
 
-  <z0> calldataload               // 0x20, bytecode_size, bytes32
-  dup2                            // 0x20, bytecode_size, bytes32, bytecode_size
-  <z0>                            // 0x20, bytecode_size, bytes32, bytecode_size, 0x00
-  callvalue                       // 0x20, bytecode_size, bytes32, bytecode_size, 0x00, callvalue
-  create2                         // 0x20, bytecode_size, deployed address
+  <z0>                            // bytes32, bytecode_size, 0x00
+  callvalue                       // bytes32, bytecode_size, 0x00, callvalue
+  create2                         // deployed address
   
   // if deployedAddress != 0x00: goto creationOkJump
   dup1 creationOkJump jumpi       // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
