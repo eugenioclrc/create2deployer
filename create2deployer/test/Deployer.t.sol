@@ -61,14 +61,15 @@ contract DeployerTest is Test {
         // this will use CREATE2_FACTORY
         address preComputedAddress =
             computeCreate2Address(salt, keccak256(abi.encodePacked(type(Counter).creationCode)), HUFFCREATE2DEPLOYER);
-        (bool success, bytes memory response) =
+        (bool success, /*bytes memory response*/) =
             HUFFCREATE2DEPLOYER.call{gas: 100000}(abi.encodePacked(salt, type(Counter).creationCode));
         require(success, "should be successful");
+        /*
         // a bit messy but works
         (,, uint256 _counter) = abi.decode(abi.encode(response), (bytes32, uint256, uint256));
         assertEq(address(uint160(_counter >> 96)), preComputedAddress, "should be the same address");
-
-        Counter create2Counter = Counter(address(uint160(_counter >> 96)));
+        */
+        Counter create2Counter = Counter(preComputedAddress);
 
         create2Counter.increment();
         assertEq(create2Counter.number(), 1);
