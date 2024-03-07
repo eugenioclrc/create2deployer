@@ -23,7 +23,7 @@
   dup1 creationOkJump jumpi       // 0xff...e0 + calldatasize, 0x00, hash, deployedAddress
 
   // if deployedAddress == 0x00 revert using invalid opcode  
-  invalid
+  dup1 revert
   
   creationOkJump:
     // avoid return the deployed address
