@@ -62,7 +62,7 @@ contract DeployerTest is Test {
         address preComputedAddress =
             computeCreate2Address(salt, keccak256(abi.encodePacked(type(Counter).creationCode)), HUFFCREATE2DEPLOYER);
         (bool success, /*bytes memory response*/) =
-            HUFFCREATE2DEPLOYER.call{gas: 100000}(abi.encodePacked(salt, type(Counter).creationCode));
+            HUFFCREATE2DEPLOYER.call(abi.encodePacked(salt, type(Counter).creationCode));
         require(success, "should be successful");
         /*
         // a bit messy but works
@@ -76,7 +76,7 @@ contract DeployerTest is Test {
 
         // this will revert and consume a lot of gas beacause of the .call, so we use a gasLimit
         ( success,) =
-            HUFFCREATE2DEPLOYER.call{gas: 100000}(abi.encodePacked(salt, type(Counter).creationCode));
+            HUFFCREATE2DEPLOYER.call(abi.encodePacked(salt, type(Counter).creationCode));
         assertFalse(success, "should revert, redeploy with same salt");
        
     }
@@ -96,14 +96,16 @@ contract DeployerTest is Test {
         // this will use CREATE2  in a real situation (like script does under the hood)
         (bool success, bytes memory response) = CREATE2_FACTORY.call(abi.encodePacked(salt, type(Counter).creationCode));
         require(success, "should be successful");
+        address _counter;
+        assembly {
+            _counter := mload(add(response, 20))
 
+        }
         // a bit messy but works
-        (,, uint256 _counter) = abi.decode(abi.encode(response), (bytes32, uint256, uint256));
-        assertEq(address(uint160(_counter >> 96)), preComputedAddress, "should be the same address");
+        assertEq(_counter, preComputedAddress, "should be the same address");
 
-        Counter create2Counter = Counter(address(uint160(_counter >> 96)));
+        Counter create2Counter = Counter(_counter);
 
-        //console2.logBytes(CREATE2_FACTORY.code);
         create2Counter.increment();
         assertEq(create2Counter.number(), 1);
     }
